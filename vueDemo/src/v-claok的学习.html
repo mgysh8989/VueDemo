@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>v-cloak</title>
+    <script src="lib/vue.js"></script>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--使用v-cloak 可以解决插值表达式的闪烁问题-->
+    <p v-cloak>this is {{msg}}</p>
+    <!-- 默认v-text 是没有闪烁问题的-->
+    <!-- 但是使用插值表达式可以在信息前后加东西，v-text会覆盖元素中所有内容-->
+    <h4 v-text="msg">this is </h4>
+
+    <div>
+        {{msg2}}
+    </div>
+
+    <div v-text="msg2"></div>
+
+    <!-- {{}} 和v-text会将所有内容解析为文本，v-html会将内容解析成html标签-->
+    <div v-html="msg2"></div>
+    <!--v-bind是vue中用于绑定属性的指令-->
+    <!--v-bind: 也可以简写为：-->
+    <!--v-bind 里面也可以写合法的js表达式-->
+    <input :title="mytitle+'123'" type="button" value="按钮">
+</div>
+
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '123',
+            msg2: '<h1>this is h1</h1>',
+            mytitle: 'this is title'
+        }
+    })
+</script>
+</body>
+</html>

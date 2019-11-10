@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <style>
+        .red {
+            color: red;
+        }
+
+        .thin {
+            font-weight: 200;
+        }
+
+        .italic {
+            font-style: italic;
+        }
+
+        .active {
+            letter-spacing: 0.5em;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--原生方式-->
+    <h1 class="red italic">this is h1</h1>
+    <!--使用cue-->
+    <!--1.直接传递一个数组，class需要用v-bind来进行绑定-->
+    <h1 :class="['red','thin']">this is h1</h1>
+
+    <!--2.在数组中使用三元表达式-->
+    <h1 :class="['red','thin',flag?'active':'']">this is h1</h1>
+
+    <!--3.在数组汇总使用对象来代替三元表达式-->
+    <h1 :class="['red','thin',{'active':flag}]">this is h1</h1>
+
+    <!--4.直接使用对象-->
+    <h1 :class="{ red:true,thin:true,active:true}">this is h1</h1>
+
+    <!--使用内连样式-->
+    <!--1.直接使用对象-->
+    <h1 :style="{color:'red','font-weight':200}">使用内敛</h1>
+    <!--2.使用data定义的对象-->
+    <h1 :style="styleobj1">使用内敛</h1>
+
+    <h1 :style="[styleobj1,styleobj2]">使用内敛</h1>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            flag: true,
+            styleobj1: {color: 'red', 'font-weight': 200},
+            styleobj2: {'font-style': 'italic'}
+        },
+        methods: {}
+    })
+</script>
+</body>
+</html>

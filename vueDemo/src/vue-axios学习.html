@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <input @click="getInfo" type="button" value="get">
+    <input @click="postInfo" type="button" value="post">
+    <input @click="jsonpInfo" type="button" value="jsonp">
+</div>
+<script>
+    //把axios绑定到vue原型上
+    Vue.prototype.$http = axios;
+    var vm = new Vue({
+        el: "#app",
+        data: {},
+        methods: {
+            getInfo() {//通过axios发起请求
+                //发起get请求后，通过then来设置成功的回调函数
+                this.$http.get('https://jsonplaceholder.typicode.com').then(function (result) {
+                    //通过result.body拿到服务器返回的成功数据
+                    console.log(result)
+                })
+            },
+            postInfo() {
+                //手动发起的post请求，默认没有表单格式，浏览器处理不了
+                //通过post方法的第三个参数设置提交类型为表单
+                this.$http.post('https://www.runoob.com/try/ajax/demo_axios_post.php', {}, {emulateJSON: true}).then(result => {
+                    console.log(result.body)
+                })
+            },
+            jsonpInfo() {
+                this.$http.jsonp('https://jsonplaceholder.typicode.com').then(result => {
+                    console.log(result.body)
+                })
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

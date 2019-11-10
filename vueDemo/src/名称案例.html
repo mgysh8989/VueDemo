@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <script src="./lib/vue-router.js"></script>
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="firstname">
+    <input type="text" v-model="lastname">
+    <input type="text" v-model="fullname">
+</div>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            firstname: '',
+            lastname: '',
+        },
+        methods: {
+            getfullname() {
+                this.fullname = this.firstname + '-' + this.lastname
+            }
+        },
+        //使用这个属性，可以监视data中数据的改变，然后触发这个watch中对应的function，watch属性主要是可以监视非Dom元素的改变
+        /*watch: {
+            firstname: function (newVal, oldVal) {
+                this.fullname = this.firstname + '-' + this.lastname
+            },
+            lastname(newVal, oldVal){
+                this.fullname = this.firstname + '-' + newVal
+            }
+        }*/
+        //在computed中，可以定义一些属性，叫做计算属性，这些属性的本质就是一个方法，在使用的时候，把它们的名称直接当做属性来使用，而不是将它们当成方法
+        computed: {
+            //计算属性在引用的时候不能加括号，按照属性调用的方法区调用
+            //只要计算属性function内部用到的任何data数据发生变化，计算属性都会立刻重新求值
+            //计算属性的结果都会被缓存，方便调用
+            fullname: function () {
+                return this.firstname + this.lastname
+            }
+        }
+
+        /*总结，computed 结果会被缓存，除非依赖响应变化才会重新计算，主要当成属性来使用
+        *methods方法表示具体操作，用来写具体逻辑
+         * watch 是观察的一个对象，键是对象的表达式，值是回调函数，主要监视特定数据的变化，从而进行某些具体逻辑，可以看成是computed和method的结合*/
+    })
+</script>
+</body>
+</html>

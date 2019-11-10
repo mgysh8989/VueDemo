@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--使用v-if，v-else组件切换组件的显示-->
+    <a @click.prevent="flag=true" href="登录">登录</a>
+    <a @click.prevent="flag=false" href="注册">注册</a>
+    <login v-if="flag"></login>
+    <register v-else="flag"></register>
+    <hr>
+    <!--vue提供了component组件，来展示对应的名称的组件-->
+    <!--component是一个占位符，：is指定展示组件的名称-->
+    <!--使用事件来改变显示组件的名称就行-->
+    <a @click.prevent="comName='login'" href="登录">登录</a>
+    <a @click.prevent="comName='register'" href="注册">注册</a>
+    <component :is="comName"></component>
+</div>
+<script>
+    Vue.component('login', {
+        template: '<h3>登录组件</h3>'
+    })
+    Vue.component('register', {
+        template: '<h3>祖册组件</h3>'
+    })
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            //绑定的组件名称
+            comName: 'login',
+            flag: true
+        },
+        methods: {}
+    })
+</script>
+</body>
+</html>

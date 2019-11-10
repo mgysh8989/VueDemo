@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>跑马灯</title>
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <input @click="run" type="button" value="跑啊">
+    <input @click="stop" type="button" value="停啊">
+    <h4>{{msg}}</h4>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '跑马灯啊',
+            /*定义定时器id*/
+            intervalId: null
+        },
+        methods: {
+            //在Vue实例中，想调用自身的数据或方法，要用this来引用
+            run() {
+                /*判断是否停止，避免重复调用*/
+                if (this.intervalId != null) return;
+                this.intervalId = setInterval(() => {
+                    //获取第一个字符
+                    var start = this.msg.substring(0, 1)
+                    //获得后面的
+                    var end = this.msg.substring(1)
+                    //拼接一下
+                    this.msg = end + start
+                }, 400)
+                //Vur实例会监听自身data所有的改变，一定发生改变，会立刻应用到页面中去
+                //开发只需要关心逻辑，不用管DOM
+            },
+            /*停止定时器*/
+            stop() {
+                clearInterval(this.intervalId)
+                this.intervalId = null
+            }
+        }
+    })
+
+    //1.首先需要给按钮绑定一个点击事件
+    //2.在处理函数中写逻辑
+    //逻辑：拿到字符串，substring截取，然后放到最后去
+    //3. 为了实现自动截取，需要截取动作放到定时器里
+</script>
+</body>
+</html>

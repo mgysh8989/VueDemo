@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <script src="./lib/vue-router.js"></script>
+    <style>
+        /*router-link 中默认提供了acitve-class来改变标签的激活类，默认值是router-link-active，需要改的话，需要在路由构造函数中设置*/
+        .myactive {
+            color: red;
+            font-weight: 800;
+            font-size: 80px;
+            background-color: green;
+        }
+
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateX(140px);
+        }
+
+        .v-enter-active,
+        v-leave-active {
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--默认渲染一个a标签-->
+    <!--如果在路由中使用查询字符串给路由传参，则不需要修改路由规则-->
+    <router-link to="/login?id=10">登录</router-link>
+    <!--使用占位符的方式来传参-->
+    <router-link to="/register/12">注册</router-link>
+    <!--这是vue-router提供的元素，专门用来当做占位符，路由规则匹配的组件，会展示到这里-->
+    <transition mode="out-in">
+        <router-view></router-view>
+    </transition>
+</div>
+<script>
+
+    var login = {
+        //可以通过query属性来获得查询字符串中的属性
+        template: '<h1>登录组件---{{$route.query.id}}</h1>',
+        data() {
+            return {msg: '123'}
+        }
+    }
+    var register = {
+        template: '<h1>注册组件---{{$route.params.id}}</h1>',
+    }
+
+    /*当导入包后，在window对象中，就有了vuerouter对象*/
+    //在 new 路由对象的时候，可以在构造函数中，传递配置对象
+    var routerObj = new VueRouter({
+        //表示路由匹配规则
+        routes: [
+            //每个路由规则都是对象，每个对象有两个属性
+            //1.path，表示监听的路由连接地址
+            //2.component，表示坚持到匹配path后，展示对应组件
+            //component的值必须是组件模板对象，不能是引用名
+            //可以通过重定向来设置默认组件，这个重定向和服务器端的重定向不一样
+            {path: '/', redirect: '/login'},
+            {path: '/login', component: login},
+            <!--可以通过占位符的方式来解析属性，解析的属性放在params-->
+            {path: '/register/:id', component: register}
+        ],
+        //可以设置自己的类来改变标签激活效果
+        linkActiveClass: 'myactive'
+    })
+    var vm = new Vue({
+        el: "#app",
+        data: {},
+        methods: {},
+        //将路由规则对象注册到vm实例，用来监听地址变化
+        router: routerObj
+    })
+</script>
+</body>
+</html>

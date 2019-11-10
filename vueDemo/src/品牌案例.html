@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <link href="./lib/bootstrap.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加品牌</h3>
+        </div>
+        <div class="panel-body form-inline">
+            <label>
+                id:<input class="form-control" type="text" v-model="id">
+            </label>
+
+            <label>
+                <!--可以用keyup属性来响应键盘事件，修饰符可以用键盘码或者名称-->
+                name:<input @keyup.enter="add" class="form-control" type="text" v-model="name">
+            </label>
+
+            <input @click="add" class="btn btn-primary" type="button" value="添加">
+            <label>
+                <!--vue支持自定义指令，在调用的时候都以v- 开头-->
+                keyword:<input class="form-control" type="text" v-color="'blue'" v-focus v-fontweight="200"
+                               v-model="keyword">
+            </label>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>time</th>
+            <th>operation</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--之前拿到的数据都是从data的list里直接拿过来的-->
+        <!--现在，定义了一个search方法，把所有关键字通过传参的形式传递给search-->
+        <!--在search中，吧所有符合关键字的数据保存到新数组中返回-->
+        <tr :key="item.id" v-for="item in search(keyword)">
+            <td>{{item.id}}</td>
+            <td v-text="item.name"></td>
+            <td>{{item.time|dateFormat}}</td>
+            <td><a @click.prevent="del(item.id)" href="">删除</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+<script>
+    //全局过滤器，进行时间格式化
+    Vue.filter('dateFormat', function (date) {
+        //根据给定字符串，得到特定时间
+        var dt = new Date(date)
+
+        var y = dt.getFullYear()
+        var m = dt.getMonth()
+        var d = dt.getDay()
+
+        return `${y}-${m}-${d}`
+    })
+    //自定义全局键盘码
+    Vue.config.keyCodes.f2 = 113
+    //使用vue.directive 定义全局自定义指令，不用加v- 前缀
+    //参数2是一个对象，对象上有一些指令相关的函数，可以在特定阶段执行操作
+    Vue.directive('focus', {
+        //每当指令绑定到元素上会执行，只执行一次
+        //每个函数第一个参数都是el，表示需要的操作的元素，是一个DOM对象
+        //在元素刚绑定指令的时候，还没有插入到DOM中，这时调用没作用
+        //只有插入DOM以后才能获取焦点
+        bind: function (el) {
+        },
+        //表示元素插入到DOM中执行，只触发一次
+        //适合用JS行为的操作
+        inserted: function (el) {
+            el.focus()
+        },
+        //vnode更新的时候，会触发，可能触发多次
+        updated: function (el) {
+
+        }
+
+    })
+    Vue.directive('color', {
+        bind: function (el, binding) {
+            //样式相关的操作一般都设置在bind中
+            //不管元素有没有插入，都会添加内联样式
+            el.style.color = binding.value
+        }
+    })
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            id: '',
+            name: '',
+            keyword: '',
+            list: [
+                {id: 1, name: '奔驰', time: new Date()},
+                {id: 2, name: '宝马', time: new Date()}
+            ]
+        },
+        created: {
+            this.getAllList()
+        },
+        methods: {
+            add() {
+                var car = {id: this.id, name: this.name, time: new Date()}
+                this.list.push(car)
+                this.id = this.name = ''
+            },
+            del(id) {
+
+                this.list.some((item, i) => {
+                    if (item.id == id) {
+                        this.list.splice(i, 1)
+                        return true;
+                        /*var index = this.list.findIndex(item => {
+
+                        //1.获取id和name
+                        //2.组织一个对象
+                        //3.把对象放到数组中（已经双向绑定）
+                        //1.根据id删除索引
+                        //2.调用数组的splice来删除
+                        //方法1
+                        //在数组的some方法中，如果return true，会立刻终止数组的
+                        //后续循环
+                            if (item.id == id) {
+                                return true;
+                            }
+                        })
+                        this.list.splice(index)*/
+                    }
+                })
+
+            },
+            search(keyword) {
+                /* var newlist = []
+                this.list.forEach(item => {
+                     if (item.name.indexOf(keyword) != -1) {
+                         newlist.push(item)
+                     }
+                 })
+                 return newlist*/
+
+                //foreach，some，filter，findindex，都是数组新方法，会对数组遍历，然后对一项进行操作
+
+                //在ES6中有新方法，string.prototype.includes()
+                //包含返回true，否则false
+                return this.list.filter(item => {
+                    if (item.name.includes(keyword)) {
+                        return item
+                    }
+                })
+            },
+            getAllList() {
+                //ajax请求，从数据库调数据，需要后端接口，这里没写
+                this.$http.get('url').then(result => {
+                    var reuslt = result.body
+                    if (result.stauts === 'sucess') {
+                        this.list = result.message
+                    } else {
+                        alert('获取数据失败')
+                    }
+                })
+            }
+        },
+        //可以和全局重名，调用顺序采用就近原则
+        //定义私有过滤器，需要过滤器名称和处理函数
+        filters: {
+            dateFormat: function (date) {
+                var dt = new Date(date)
+
+                var y = dt.getFullYear()
+                //padstart,es6新方法，第一参数总长度，第二个补的东西
+                var m = (dt.getMonth()).toString().padStart(2, '0')
+                var d = (dt.getDay()).toString().padStart(2, '0')
+
+                return `${y}-${m}-${d}`
+            }
+        },
+        //自定义私有指令
+        directives: {
+            'fontweight': {
+                bind: function (el, binding) {
+                    el.style.fontWeight = binding.value
+                }
+            },
+            //采用指令的简写模式，相当于把函数写到bind和update中
+            'fontsize': function (el, binding) {
+                el.style.fontSize = binding.value
+            }
+        }
+    })
+</script>

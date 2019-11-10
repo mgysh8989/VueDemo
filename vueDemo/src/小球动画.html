@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <style>
+        .ball {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <input @click="flag=!flag" type="button" value="bian">
+    <transition
+            @after-enter="aenter"
+            @before-enter="benter"
+            @enter="enter">
+        <div class="ball" v-show="flag"></div>
+    </transition>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            flag: false
+        },
+        methods: {
+            //动画钩子函数的第一个参数el，是需要执行动画的元素，原生DOM对象
+            benter(el) {
+                //设置动画开始前的起始位置
+                el.style.transform = "translate(0,0)"
+            },
+            enter(el, done) {
+                //表示动画开始后的样式，设置成完成动画的结束状态
+                el.offsetWidth
+                el.style.transform = "translate(150px,450px)"
+                el.style.transition = "all 1s ease"
+                //这个done就是aenter这个函数的引用
+                done()
+            },
+            aenter(el) {
+                //动画完成之后的调用
+                //第一个功能是让小球隐藏，第二个是直接跳过后半场动画
+                this.flag = !this.flag
+            }
+        }
+    })
+</script>
+</body>
+</html>

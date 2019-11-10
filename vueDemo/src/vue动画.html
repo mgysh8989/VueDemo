@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./lib/vue.js"></script>
+    <!--引入第三方动画库-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" rel="stylesheet">
+    <!--2.自定义两组样式，控制动画-->
+    <style>
+        /*v-enter是进入之前的状态，此时还没进入动画*/
+        /*v-leave是动画结束之后的终止状态*/
+        .v-enter,
+        .v-leave-to {
+            opacity: 0;
+            transform: translateX(150px);
+        }
+
+        /*v-enter-active是入场动画的时间短*/
+        /*v-leave-active是出场动画的时间段*/
+        .v-enter-active,
+        .v-leave-active {
+            transition: all 0.4s ease;
+        }
+
+        /*前缀的作用是可以区分不同名字动画的实现*/
+        .my-enter,
+        .my-leave-to {
+            opacity: 0;
+            transform: translateY(150px);
+        }
+
+        /*v-enter-active是入场动画的时间短*/
+        /*v-leave-active是出场动画的时间段*/
+        .my-enter-active,
+        .my-leave-active {
+            transition: all 0.4s ease;
+        }
+    </style>
+
+    <style>
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <!--需求，点击按钮，让h3显示，在隐藏-->
+    <!--使用transition元素，吧需要被动画控制的元素包裹起来-->
+    <!--这个元素，是vue提供的-->
+    <input @click="flag=!flag" type="button" value="toggle">
+    <transition>
+        <h3 v-if="flag">this is h3 7</h3>
+    </transition>
+    <hr>
+    <input @click="flag2=!flag2" type="button" value="toggle">
+    <transition name="my">
+        <h3 v-if="flag2">this is h3 7</h3>
+    </transition>
+    <hr>
+    <input @click="flag2=!flag2" type="button" value="toggle">
+    <!--使用第三方库做动画-->
+    <transition :duration="800" enter-active-class="bounceIn" leave-active-class="bounceOut">
+        <h3 class="animated" v-if="flag2">this is h3 7</h3>
+    </transition>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            flag: false,
+            flag2: false
+        },
+        methods: {}
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>v-on</title>
+    <script src="lib/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--如果在绑定事件中直接写vue实例中的变量名，vue会到data中找，为了避免这种情况，使用v-on进行事件绑定
+    在methods里写绑定时间的函数-->
+    <input :title="mytitle" type="button" v-on:click="show" value="按钮">
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            mytitle: 'this is title'
+        },
+        methods: {//method属性中定义当前实例汇总所有可用的方法
+            show: function () {
+                alert('hello')
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .inner {
+            height: 150px;
+            background-color: lightcyan;
+        }
+    </style>
+    <script src="./lib/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--使用stop修饰符来阻止冒泡调用-->
+    <div @click="divclick" class="inner">
+        <input @click.stop="btnclick" type="button" value="click">
+    </div>
+
+    <!--使用prevent阻止默认行为-->
+    <a @click.prevent="linkclick" href="https://www.baidu.com">baidu</a>
+
+    <!--使用capture来捕获触发事件的机制-->
+    <div @click.capture="divclick" class="inner">
+        <input @click="btnclick" type="button" value="click">
+    </div>
+
+    <!--使用self实现只有当前元素触发-->
+    <div @click.self="divclick" class="inner">
+        <input @click="btnclick" type="button" value="click">
+    </div>
+
+    <!--使用once来规定事件只会触发一次-->
+    <a @click.prevent.once="linkclick" href="https://www.baidu.com">baidu</a>
+</div>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {},
+        methods: {
+            divclick() {
+                console.log('div')
+            },
+            btnclick() {
+                console.log('btn')
+            },
+            linkclick() {
+                console.log('link')
+            }
+        }
+    })
+</script>
+</body>
+</html>
